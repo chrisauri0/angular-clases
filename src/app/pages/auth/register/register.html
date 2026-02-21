@@ -1,0 +1,62 @@
+<div class="register-container">
+    <p-card header="Crear Cuenta">
+        <form [formGroup]="registerForm" (ngSubmit)="onSubmit()" class="p-fluid">
+
+            <!-- Nombre -->
+            <div class="field">
+                <label for="name">Nombre</label>
+                <input id="name" type="text" pInputText formControlName="name" placeholder="Tu nombre" />
+                <small class="p-error" *ngIf="registerForm.get('name')?.invalid && registerForm.get('name')?.touched">
+                    El nombre es obligatorio
+                </small>
+            </div>
+
+            <!-- Email -->
+            <div class="field">
+                <label for="email">Correo</label>
+                <input id="email" type="text" pInputText formControlName="email" placeholder="correo@ejemplo.com" />
+                <small class="p-error" *ngIf="registerForm.get('email')?.invalid && registerForm.get('email')?.touched">
+                    Ingresa un correo válido
+                </small>
+            </div>
+
+            <!-- Password -->
+            <div class="field">
+                <label for="password">Contraseña</label>
+                <p-password formControlName="password" [toggleMask]="true" placeholder="Mínimo 6 caracteres">
+                </p-password>
+                <small class="p-error"
+                    *ngIf="registerForm.get('password')?.errors?.['minlength'] && registerForm.get('password')?.touched">
+                    Debe tener al menos 6 caracteres
+                </small>
+            </div>
+
+            <!-- Confirm Password -->
+            <div class="field">
+                <label for="confirmPassword">Confirmar contraseña</label>
+                <p-password formControlName="confirmPassword" [feedback]="false" [toggleMask]="true"
+                    placeholder="Repite la contraseña">
+                </p-password>
+                <small class="p-error"
+                    *ngIf="registerForm.get('confirmPassword')?.errors?.['mismatch'] && registerForm.get('confirmPassword')?.touched">
+                    Las contraseñas no coinciden
+                </small>
+            </div>
+
+            <!-- Términos -->
+            <div class="field-checkbox">
+                <p-checkbox formControlName="terms" binary="true" inputId="terms">
+                </p-checkbox>
+                <label for="terms">Acepto los términos y condiciones</label>
+            </div>
+            <small class="p-error" *ngIf="registerForm.get('terms')?.invalid && registerForm.get('terms')?.touched">
+                Debes aceptar los términos
+            </small>
+
+            <!-- Botón -->
+            <button pButton type="submit" label="Registrarse" icon="pi pi-user-plus" [loading]="loading" class="p-mt-3">
+            </button>
+
+        </form>
+    </p-card>
+</div>

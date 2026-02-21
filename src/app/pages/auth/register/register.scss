@@ -1,0 +1,16 @@
+.register-container {
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: linear-gradient(135deg, #3f51b5, #2196f3);
+}
+
+p-card {
+  width: 350px;
+}
+
+.field {
+    margin-bottom: 1rem;
+    margin-right: 1rem;
+}
