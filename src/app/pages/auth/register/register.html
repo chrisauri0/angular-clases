@@ -4,10 +4,10 @@
 
             <!-- Nombre -->
             <div class="field">
-                <label for="name">Nombre</label>
-                <input id="name" type="text" pInputText formControlName="name" placeholder="Tu nombre" />
+                <label for="name">Nombre de usuario</label>
+                <input id="name" type="text" pInputText formControlName="name" placeholder="Tu nombre de usuario" />
                 <small class="p-error" *ngIf="registerForm.get('name')?.invalid && registerForm.get('name')?.touched">
-                    El nombre es obligatorio
+                    El nombre de usuario es obligatorio
                 </small>
             </div>
 
@@ -23,13 +23,24 @@
             <!-- Password -->
             <div class="field">
                 <label for="password">Contraseña</label>
-                <p-password formControlName="password" [toggleMask]="true" placeholder="Mínimo 6 caracteres">
+                <p-password formControlName="password" [toggleMask]="true" placeholder="Mínimo 10 caracteres">
                 </p-password>
                 <small class="p-error"
                     *ngIf="registerForm.get('password')?.errors?.['minlength'] && registerForm.get('password')?.touched">
-                    Debe tener al menos 6 caracteres
+                    Debe tener al menos 10 caracteres y tener mayúsculas, minúsculas, números y alguno de estos
+                    caracteres especiales: !@#$%^&*()_+
+                </small>
+                <small class="p-error"
+                    *ngIf="registerForm.get('password')?.errors?.['pattern'] && registerForm.get('password')?.touched">
+                    La contraseña
+                    no puede estar vacía, debe tener al menos 10 caracteres, contener mayúsculas, minúsculas, números y
+                    alguno de estos caracteres especiales: !@#$%^&*()_+
                 </small>
             </div>
+
+
+
+
 
             <!-- Confirm Password -->
             <div class="field">
@@ -42,6 +53,54 @@
                     Las contraseñas no coinciden
                 </small>
             </div>
+
+            <!-- nombre completo  -->
+
+            <div class="field">
+                <label for="fullName">Nombre completo</label>
+                <input id="fullName" type="text" pInputText formControlName="fullName"
+                    placeholder="Tu nombre completo" />
+                <small class="p-error"
+                    *ngIf="registerForm.get('fullName')?.invalid && registerForm.get('fullName')?.touched">
+                    El nombre completo es obligatorio
+                </small>
+            </div>
+
+            <!-- Direccion  -->
+
+            <div class="field">
+                <!-- <p-message severity="error" icon="pi pi-times-circle" styleClass="mb-2">Validation Failed</p-message> -->
+                <label for="address">Dirección</label>
+                <input id="address" type="text" pInputText formControlName="address"
+                    placeholder="Tu dirección completa" />
+                <small class="p-error"
+                    *ngIf="registerForm.get('address')?.invalid && registerForm.get('address')?.touched">
+                    La dirección es obligatoria
+                </small>
+            </div>
+
+
+            <!-- Telefono  -->
+
+            <div class="field">
+                <label for="phone">Teléfono</label>
+                <input id="phone" type="text" pInputText formControlName="phone" placeholder="Tu número de teléfono" />
+                <small class="p-error" *ngIf="registerForm.get('phone')?.invalid && registerForm.get('phone')?.touched">
+                    El teléfono es obligatorio
+                </small>
+            </div>
+
+            <!-- mayor de edad -->
+
+            <div class="field-checkbox">
+                <p-checkbox formControlName="adult" binary="true" inputId="adult">
+                </p-checkbox>
+                <label for="adult">Soy mayor de edad</label>
+                <small class="p-error" *ngIf="registerForm.get('adult')?.invalid && registerForm.get('adult')?.touched">
+                    Debes ser mayor de edad para registrarte
+                </small>
+            </div>
+
 
             <!-- Términos -->
             <div class="field-checkbox">
