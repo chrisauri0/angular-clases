@@ -1,0 +1,139 @@
+/* CONTENEDOR GENERAL */
+.landing-container {
+  font-family: 'Inter', sans-serif;
+  background: linear-gradient(135deg, #0f172a, #1e293b);
+  color: #f8fafc;
+}
+
+/* HERO */
+.hero {
+  padding: 6rem 2rem;
+  text-align: center;
+
+  h1 {
+    font-size: 3rem;
+    font-weight: 700;
+    background: linear-gradient(90deg, #3b82f6, #06b6d4);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+
+  p {
+    font-size: 1.2rem;
+    max-width: 600px;
+    margin: 0 auto;
+    opacity: 0.85;
+  }
+
+  button {
+    margin: 0.5rem;
+  }
+}
+
+/* FEATURES */
+.features {
+  background-color: #f8fafc;
+  color: #1e293b;
+  border-radius: 2rem 2rem 0 0;
+  margin-top: 3rem;
+}
+
+.feature-card {
+  background: white;
+  border-radius: 1.5rem;
+  transition: all 0.3s ease;
+  height: 100%;
+
+  h3 {
+    font-weight: 600;
+  }
+
+  p {
+    color: #64748b;
+    font-size: 0.95rem;
+  }
+
+  &:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.15);
+  }
+
+  i {
+    color: #3b82f6;
+  }
+}
+
+/* BENEFITS */
+.benefits {
+  background-color: #ffffff;
+  color: #1e293b;
+
+  h2 {
+    font-weight: 700;
+    margin-bottom: 2rem;
+  }
+
+  h3 {
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+  }
+
+  p {
+    color: #64748b;
+    font-size: 0.95rem;
+  }
+}
+
+/* CTA */
+.cta {
+  background: linear-gradient(135deg, #3b82f6, #06b6d4);
+  color: white;
+  padding: 5rem 2rem;
+
+  h2 {
+    font-size: 2rem;
+    font-weight: 700;
+  }
+
+  p {
+    opacity: 0.9;
+  }
+
+  button {
+    background: white !important;
+    color: #1e293b !important;
+    border: none;
+    font-weight: 600;
+    border-radius: 2rem;
+    padding: 0.75rem 2rem;
+    transition: all 0.3s ease;
+
+    &:hover {
+      background: #f1f5f9 !important;
+      transform: scale(1.05);
+    }
+  }
+}
+
+/* FOOTER */
+.footer {
+  background-color: #0f172a;
+  color: #94a3b8;
+  font-size: 0.9rem;
+  padding: 1.5rem;
+}
+
+/* RESPONSIVE */
+@media (max-width: 768px) {
+  .hero h1 {
+    font-size: 2.2rem;
+  }
+
+  .features {
+    border-radius: 1.5rem 1.5rem 0 0;
+  }
+
+  .feature-card {
+    margin-bottom: 1.5rem;
+  }
+}

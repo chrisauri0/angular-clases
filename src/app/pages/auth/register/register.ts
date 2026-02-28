@@ -10,6 +10,7 @@ import { FormBuilder, FormGroup, Validators, AbstractControl } from '@angular/fo
 import { CommonModule } from '@angular/common';
 @Component({
   selector: 'app-register',
+  standalone: true,
   imports: [ReactiveFormsModule, InputTextModule, PasswordModule, ButtonModule, CardModule, CheckboxModule, CommonModule, MessageModule],
   templateUrl: './register.html',
   styleUrl: './register.scss',
@@ -26,14 +27,18 @@ export class Register {
         name: ['', Validators.required],
         fullName: ['', Validators.required],
         phone: [
-              '',
-              [
-                Validators.required,
-                Validators.pattern(/^[0-9]{10}$/)
-              ]
-            ],
+          '',
+          [
+            Validators.required,
+            Validators.pattern(/^[0-9]{10}$/)
+          ]
+        ],
         email: ['', [Validators.required, Validators.email]],
-        password: ['', [Validators.required, Validators.minLength(6), Validators.pattern(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_+{}:"?[\];',./]).{10,}$/)]],
+        password: ['', [
+          Validators.required,
+          Validators.minLength(10),
+          this.passwordComplexityValidator
+        ]],
         confirmPassword: ['', Validators.required],
         address: ['', Validators.required],
         adult: [false, Validators.requiredTrue],
@@ -43,30 +48,43 @@ export class Register {
     );
   }
 
+  passwordComplexityValidator(control: AbstractControl) {
+    const value = control.value || '';
+    const hasUpper = /[A-Z]/.test(value);
+    const hasLower = /[a-z]/.test(value);
+    const hasNumber = /[0-9]/.test(value);
+    const hasSpecial = /[!@#$%^&*()_+{}:\"?\[\];',./]/.test(value);
+    if (!hasUpper || !hasLower || !hasNumber || !hasSpecial) {
+      return { complexity: true };
+    }
+    return null;
+  }
   passwordMatchValidator(form: AbstractControl) {
     const password = form.get('password')?.value;
     const confirmPassword = form.get('confirmPassword')?.value;
-
     if (password !== confirmPassword) {
-      form.get('confirmPassword')?.setErrors({ mismatch: true });
+      return { mismatch: true };
     } else {
-      form.get('confirmPassword')?.setErrors(null);
+      return null;
     }
   }
 
-  onSubmit() {
+  async onSubmit() {
     if (this.registerForm.invalid) {
       this.registerForm.markAllAsTouched();
       return;
     }
 
     this.loading = true;
-
-    // Simulación de registro
+    // Guardar usuario en localStorage
+    const userData = { ...this.registerForm.value };
+    delete userData.confirmPassword;
+    localStorage.setItem('user', JSON.stringify(userData));
     setTimeout(() => {
-      console.log('Usuario registrado:', this.registerForm.value);
       this.loading = false;
-    }, 1500);
+      alert('Registro exitoso');
+      this.registerForm.reset();
+    }, 1200);
   }
 
 }

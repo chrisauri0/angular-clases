@@ -27,14 +27,12 @@
                 </p-password>
                 <small class="p-error"
                     *ngIf="registerForm.get('password')?.errors?.['minlength'] && registerForm.get('password')?.touched">
-                    Debe tener al menos 10 caracteres y tener mayúsculas, minúsculas, números y alguno de estos
-                    caracteres especiales: !@#$%^&*()_+
+                    Debe tener al menos 10 caracteres
                 </small>
+
                 <small class="p-error"
-                    *ngIf="registerForm.get('password')?.errors?.['pattern'] && registerForm.get('password')?.touched">
-                    La contraseña
-                    no puede estar vacía, debe tener al menos 10 caracteres, contener mayúsculas, minúsculas, números y
-                    alguno de estos caracteres especiales: !@#$%^&*()_+
+                    *ngIf="registerForm.get('password')?.errors?.['complexity'] && registerForm.get('password')?.touched">
+                    Debe contener mayúsculas, minúsculas, números y un carácter especial
                 </small>
             </div>
 
@@ -48,8 +46,8 @@
                 <p-password formControlName="confirmPassword" [feedback]="false" [toggleMask]="true"
                     placeholder="Repite la contraseña">
                 </p-password>
-                <small class="p-error"
-                    *ngIf="registerForm.get('confirmPassword')?.errors?.['mismatch'] && registerForm.get('confirmPassword')?.touched">
+                <small class="p-error" *ngIf="registerForm.errors?.['mismatch'] 
+         && registerForm.get('confirmPassword')?.touched">
                     Las contraseñas no coinciden
                 </small>
             </div>
@@ -114,6 +112,7 @@
 
             <!-- Botón -->
             <button pButton type="submit" label="Registrarse" icon="pi pi-user-plus" [loading]="loading" class="p-mt-3">
+                crear cuenta
             </button>
 
         </form>
