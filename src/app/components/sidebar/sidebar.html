@@ -1,1 +1,33 @@
-<router-outlet></router-outlet>
+<div class="container">
+    <div class="sidebar">
+        <p-panelMenu [model]="items" class="boton-sidebar"></p-panelMenu>
+
+    </div>
+    <router-outlet class=""></router-outlet>
+</div>
+
+<style>
+    .container {
+        display: flex;
+        min-height: 100vh;
+        /* ocupa toda la altura */
+    }
+
+    .sidebar {
+        width: 10dw;
+        background-color: #194f86;
+        padding: 1rem;
+        flex-shrink: 0;
+        /* evita que se encoja */
+    }
+
+
+    .content {
+        flex: 1;
+        display: flex;
+        /* importante */
+        flex-direction: column;
+        /* importante */
+
+    }
+</style>

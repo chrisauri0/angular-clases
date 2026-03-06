@@ -1,0 +1,35 @@
+<div class="usuarios-container">
+
+    <p-card header="" class="p-mb-4 p-shadow-3 p-p-4">
+        <div class="card flex justify-center p-mb-4">
+            <h1 style="color: #ffffff;">Datos del perfil</h1>
+            <p-floatlabel class="">
+                <input id="username" pInputText [(ngModel)]="nombre" autocomplete="off" />
+                <label for="username">Username</label>
+            </p-floatlabel>
+            <p-floatlabel class="">
+                <input id="email" pInputText [(ngModel)]="email" autocomplete="off" />
+                <label for="email">Email</label>
+            </p-floatlabel>
+            <p-floatlabel>
+                <input id="password" pInputText [(ngModel)]="password" autocomplete="off" type="password" />
+                <label for="password">Password</label>
+            </p-floatlabel>
+            <p-floatlabel>
+                <input id="direccion" pInputText [(ngModel)]="direccion" autocomplete="off" />
+                <label for="direccion">Dirección</label>
+            </p-floatlabel>
+            <p-toast />
+            <p-button type="button" label="Save" pRipple (click)="showSuccess()" severity="success" />
+
+        </div>
+    </p-card>
+
+
+</div>
+<style>
+    .p-floatlabel {
+
+        margin-bottom: 2rem;
+    }
+</style>

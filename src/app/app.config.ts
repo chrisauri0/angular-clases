@@ -4,6 +4,8 @@ import { provideRouter } from '@angular/router';
 import { providePrimeNG } from 'primeng/config';
 import Aura from '@primeuix/themes/aura';
 import { routes } from './app.routes';
+import { HasPermissionDirective } from './directives/has-permission.directive';
+import { PermissionsService } from './services/permissions.service';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -15,6 +17,8 @@ export const appConfig: ApplicationConfig = {
         }),
     provideBrowserGlobalErrorListeners(),
     provideZoneChangeDetection({ eventCoalescing: true }),
-    provideRouter(routes)
+    provideRouter(routes),
+    PermissionsService,
+    HasPermissionDirective
   ]
 };
