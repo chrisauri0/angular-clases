@@ -7,11 +7,11 @@ import { MessageModule } from 'primeng/message';
 import { CardModule } from 'primeng/card';
 import { CheckboxModule } from 'primeng/checkbox';
 import { FormBuilder, FormGroup, Validators, AbstractControl } from '@angular/forms';
-import { CommonModule } from '@angular/common';
+
 @Component({
   selector: 'app-register',
   standalone: true,
-  imports: [ReactiveFormsModule, InputTextModule, PasswordModule, ButtonModule, CardModule, CheckboxModule, CommonModule, MessageModule],
+  imports: [ReactiveFormsModule, InputTextModule, PasswordModule, ButtonModule, CardModule, CheckboxModule, MessageModule],
   templateUrl: './register.html',
   styleUrl: './register.scss',
 })

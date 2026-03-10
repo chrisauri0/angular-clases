@@ -4,7 +4,7 @@ import { ToastModule } from 'primeng/toast';
 import { ButtonModule } from 'primeng/button';
 import { CardModule } from 'primeng/card';
 import { FormBuilder, FormGroup, Validators, AbstractControl } from '@angular/forms';
-import { CommonModule } from '@angular/common';
+
 import { MessageService } from 'primeng/api';
 import { FormsModule } from '@angular/forms';
 import { FloatLabelModule } from 'primeng/floatlabel';
@@ -20,7 +20,6 @@ import { HasPermissionDirective } from "../../directives/has-permission.directiv
     InputTextModule,
     ButtonModule,
     CardModule,
-    CommonModule,
     FormsModule,
     FloatLabelModule,
     ToastModule,

@@ -6,13 +6,13 @@ import { PasswordModule } from 'primeng/password';
 import { ButtonModule } from 'primeng/button';
 import { CardModule } from 'primeng/card';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { CommonModule } from '@angular/common';
+
 import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-login',
   standalone: true,
-  imports: [ReactiveFormsModule, InputTextModule, PasswordModule, ButtonModule, CardModule, CommonModule, ],
+  imports: [ReactiveFormsModule, InputTextModule, PasswordModule, ButtonModule, CardModule],
   templateUrl: './login.html',
   styleUrl: './login.scss',
 })
