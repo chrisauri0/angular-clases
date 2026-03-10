@@ -12,10 +12,9 @@ import { PanelMenuModule } from 'primeng/panelmenu';
 })
 export class Sidebar {
 items = [
-    { label: 'Usuarios', routerLink: '/usuarios' },
-    { label: 'Grupos', routerLink: '/grupos' },
-    { label: 'Cerrar Sesión', routerLink: '/login' },
-    { label: 'Version : Practica 3', }
-    // Agrega más rutas aquí si lo necesitas
-  ];
+  { label: 'Usuarios', icon: 'pi pi-user', routerLink: '/usuarios' },
+  { label: 'Grupos', icon: 'pi pi-users', routerLink: '/grupos' },
+  { label: 'Cerrar Sesión', icon: 'pi pi-sign-out', routerLink: '/login' },
+  { label: 'Version : Practica 3' }
+];
 }

@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { AuthService } from '../../../services/auth-service';
 import { ReactiveFormsModule } from '@angular/forms';
 import { InputTextModule } from 'primeng/inputtext';
 import { PasswordModule } from 'primeng/password';
@@ -24,7 +25,7 @@ loginForm: FormGroup;
     password: 'admin123'
   };
 
-  constructor(private fb: FormBuilder, private routerService: Router) {
+  constructor(private fb: FormBuilder, private routerService: Router, private authService: AuthService) {
     this.loginForm = this.fb.group({
       email: ['', [Validators.required, Validators.email]],
       password: ['', Validators.required]
@@ -40,27 +41,21 @@ loginForm: FormGroup;
   this.loading = true;
 
   setTimeout(() => {
-    
     const emailInput = this.loginForm.value.email;
     const passwordInput = this.loginForm.value.password;
 
-    const isEmailMatch = emailInput === this.userFake.email;
-    const isPasswordMatch = passwordInput === this.userFake.password;
+    const role = this.authService.login(emailInput, passwordInput);
 
-    if (isEmailMatch && isPasswordMatch) {
-      this.routerService.navigate(['/home']); // mejor que window.location
-    } 
-    else if (!isEmailMatch && !isPasswordMatch) {
-      alert('Correo y contraseña incorrectos');
-    } 
-    else if (!isEmailMatch) {
-      alert('Correo incorrecto');
-    } 
-    else if (!isPasswordMatch) {
-      alert('Contraseña incorrecta');
+    if (role === 'admin') {
+      this.routerService.navigate(['/home']);
+    } else if (role === 'user') {
+      this.routerService.navigate(['/home']);
+    } else {
+      // Usuario o contraseña incorrectos
+      alert('Correo o contraseña incorrectos');
     }
 
     this.loading = false;
-  }, 1500);
+  }, 1000);
 }
 }
