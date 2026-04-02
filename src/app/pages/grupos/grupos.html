@@ -1,97 +1,622 @@
 <div class="grupos-container">
-    <div class="secciones">
-        <h1>Total</h1>
-        <!-- contador de grupos -->
-        <p-card>
-            <p>N</p>
-        </p-card>
+    <p-panel *ngIf="grupoParam === ''" header="Selecciona a que grupo quieres ir " class="w-full">
+        <div class="flex flex-row gap-8 flex-nowrap items-center">
+            <button type="button"
+                class="bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-2 px-6 rounded shadow transition"
+                (click)="goToGrupo('equipo-dev')">
+                Equipo dev
+            </button>
+            <button type="button"
+                class="bg-gray-200 hover:bg-gray-300 text-gray-800 font-semibold py-2 px-6 rounded shadow transition"
+                (click)="goToGrupo('soporte-tecnico')">
+                Soporte Tecnico
+            </button>
+        </div>
+    </p-panel>
+
+
+
+
+
+
+    <!-- <div>
+
+        <p-button (click)="showDialog()" label="Show" />
+        <p-dialog header="Crea un grupo" [(visible)]="visible" [style]="{ width: '25rem' }">
+            <p-card header="" class="p-mb-4 p-shadow-3 p-p-4">
+                <div class="card flex justify-center p-mb-4">
+                    <p-floatlabel class="">
+                        <input id="username" name="nivel" pInputText [(ngModel)]="nivel" autocomplete="off" />
+                        <label for="username">Nivel </label>
+                    </p-floatlabel>
+                    <p-floatlabel class="">
+                        <input id="email" name="autor" pInputText [(ngModel)]="autor" autocomplete="off" />
+                        <label for="email">autor</label>
+                    </p-floatlabel>
+                    <p-floatlabel>
+                        <input id="password" name="nombre" pInputText [(ngModel)]="nombre" autocomplete="off"
+                            type="password" />
+                        <label for="password">nombre</label>
+                    </p-floatlabel>
+                    <p-floatlabel>
+                        <input id="direccion" name="integrantes" pInputText [(ngModel)]="integrantes"
+                            autocomplete="off" />
+                        <label for="direccion">integrantes</label>
+                    </p-floatlabel>
+                    <p-floatlabel>
+                        <input id="tickets" name="tickets" pInputText [(ngModel)]="tickets" autocomplete="off" />
+                        <label for="tickets">tickets</label>
+                    </p-floatlabel>
+                    <p-floatlabel>
+                        <input id="descripcion" name="descripcion" pInputText [(ngModel)]="descripcion"
+                            autocomplete="off" />
+                        <label for="descripcion">descripcion</label>
+                    </p-floatlabel>
+
+
+                </div>
+            </p-card>
+            <div class="flex justify-end gap-2">
+                <p-button label="Cancel" severity="secondary" (click)="visible = false" />
+                <p-button type="button" label="Save" pRipple (click)="visible = false" (click)="showSuccess()"
+                    severity="success" />
+            </div>
+        </p-dialog>
+
     </div>
-    <div class="secciones">
-        <h1>Advance</h1>
 
-        <p-card>
-            card de prueba
-        </p-card>
-        <p-toast />
+    <div visible="false" class="selecion-grupo">
+        <section class="mockup-view create-view">
+            <h2>8. Crear Ticket</h2>
+            <div class="form-container">
+                <div class="form-group">
+                    <label>Título *</label>
+                    <input type="text" placeholder="Ej. El botón no funciona">
+                </div>
+                <div class="form-group">
+                    <label>Descripción</label>
+                    <textarea rows="4" placeholder="Detalles del problema..."></textarea>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Estado Inicial</label>
+                        <select>
+                            <option>Pendiente</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Asignar a</label>
+                        <select>
+                            <option>Sin asignar</option>
+                            <option>Asignarme a mí</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Prioridad</label>
+                    <select>
+                        <option> (Media)</option>
+                        <option> (Alta)</option>
+                    </select>
+                </div>
+                <button type="button"
+                    class="bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-2 px-6 rounded shadow transition w-full mt-4">Crear
+                    Ticket</button>
+            </div>
+        </section>
 
     </div>
-    <p-button (click)="showDialog()" label="Show" />
-    <p-dialog header="Crea un grupo" [(visible)]="visible" [style]="{ width: '25rem' }">
-        <p-card header="" class="p-mb-4 p-shadow-3 p-p-4">
-            <div class="card flex justify-center p-mb-4">
-                <p-floatlabel class="">
-                    <input id="username" name="nivel" pInputText [(ngModel)]="nivel" autocomplete="off" />
-                    <label for="username">Nivel </label>
-                </p-floatlabel>
-                <p-floatlabel class="">
-                    <input id="email" name="autor" pInputText [(ngModel)]="autor" autocomplete="off" />
-                    <label for="email">autor</label>
-                </p-floatlabel>
-                <p-floatlabel>
-                    <input id="password" name="nombre" pInputText [(ngModel)]="nombre" autocomplete="off"
-                        type="password" />
-                    <label for="password">nombre</label>
-                </p-floatlabel>
-                <p-floatlabel>
-                    <input id="direccion" name="integrantes" pInputText [(ngModel)]="integrantes" autocomplete="off" />
-                    <label for="direccion">integrantes</label>
-                </p-floatlabel>
-                <p-floatlabel>
-                    <input id="tickets" name="tickets" pInputText [(ngModel)]="tickets" autocomplete="off" />
-                    <label for="tickets">tickets</label>
-                </p-floatlabel>
-                <p-floatlabel>
-                    <input id="descripcion" name="descripcion" pInputText [(ngModel)]="descripcion"
-                        autocomplete="off" />
-                    <label for="descripcion">descripcion</label>
-                </p-floatlabel>
 
+    <div *ngIf="grupoParam === 'soporte-tecnico'" class="mt-8 flex flex-col gap-6 w-full max-w-7xl mx-auto">
+        <p-panel header="Dashboard del Grupo (Soporte Técnico)" styleClass="w-full">
+            <div class="text-lg text-blue-700 font-bold">¡Bienvenido al grupo de Soporte Técnico!</div>
+        </p-panel>
+    </div> -->
+
+
+
+    <div *ngIf="grupoParam === 'equipo-dev'" class="mt-8 flex flex-col gap-6 w-full max-w-7xl mx-auto">
+        <!-- Ejemplo: otro grupo -->
+
+
+
+        <!-- 2. Dashboard del Grupo -->
+        <p-panel header="Dashboard del Grupo (Equipo Dev)" styleClass="w-full">
+            <div class="flex gap-4 flex-wrap mb-6">
+                <p-card styleClass="flex-1 min-w-[200px] shadow-sm">
+                    <div class="text-4xl font-bold text-slate-800">24</div>
+                    <div class="text-slate-500 font-semibold mt-1">Tickets Totales</div>
+                </p-card>
+                <p-card styleClass="flex-1 min-w-[200px] shadow-sm">
+                    <div class="text-4xl font-bold text-orange-500">5</div>
+                    <div class="text-slate-500 font-semibold mt-1">Pendientes</div>
+                </p-card>
+                <p-card styleClass="flex-1 min-w-[200px] shadow-sm">
+                    <div class="text-4xl font-bold text-blue-500">8</div>
+                    <div class="text-slate-500 font-semibold mt-1">En Progreso</div>
+                </p-card>
+                <p-card styleClass="flex-1 min-w-[200px] shadow-sm">
+                    <div class="text-4xl font-bold text-green-500">11</div>
+                    <div class="text-slate-500 font-semibold mt-1">Hechos</div>
+                </p-card>
+            </div>
+
+            <h3 class="font-bold text-xl mb-4 text-slate-800">Mis tickets recientes</h3>
+            <div class="flex flex-col gap-3">
+                <div
+                    class="bg-white p-4 shadow-sm rounded-lg border border-slate-100 flex items-center gap-4 hover:shadow-md transition-shadow cursor-pointer">
+                    <p-tag value="En Progreso" severity="success"></p-tag>
+                    <span class="font-semibold text-slate-700">#102 - Arreglar bug de login</span>
+                </div>
+                <div
+                    class="bg-white p-4 shadow-sm rounded-lg border border-slate-100 flex items-center gap-4 hover:shadow-md transition-shadow cursor-pointer">
+                    <p-tag value="Pendiente" severity="warn"></p-tag>
+                    <span class="font-semibold text-slate-700">#105 - Actualizar dependencias</span>
+                </div>
+            </div>
+            <br>
+            <p-button *ifHasPermission="'tickets:crear'" label="Nuevo Ticket" icon="pi pi-plus" severity="success"
+                (click)="mostrarCrearTicket = true">
+            </p-button>
+        </p-panel>
+
+
+        <!-- modal crear ticket  -->
+
+
+
+        <p-dialog header="Crear Nuevo Ticket" [(visible)]="mostrarCrearTicket" [modal]="true"
+            [style]="{width:'500px', height: '700px'}" [draggable]="false" [resizable]="false">
+
+            <div class="flex flex-col gap-4">
+
+                <!-- titulo -->
+                <div>
+                    <label class="font-semibold">Título</label>
+                    <input pInputText [(ngModel)]="nuevoTicket.title" class="w-full">
+                </div>
+
+                <!-- descripcion -->
+                <div>
+                    <label class="font-semibold">Descripción</label>
+                    <textarea pInputText rows="4" [(ngModel)]="nuevoTicket.description" class="w-full">
+</textarea>
+                </div>
+
+                <!-- prioridad -->
+                <div>
+                    <label class="font-semibold">Prioridad</label>
+
+                    <p-select [options]="priorities" [(ngModel)]="nuevoTicket.priority"
+                        placeholder="Seleccionar prioridad" class="w-full">
+                    </p-select>
+
+                </div>
+
+                <!-- asignado -->
+                <div>
+
+                    <label class="font-semibold">Asignar a</label>
+
+                    <p-select [options]="usuarios" [(ngModel)]="nuevoTicket.assignee" placeholder="Seleccionar usuario"
+                        class="w-full">
+                    </p-select>
+
+                </div>
+
+                <!-- fecha -->
+                <div>
+
+                    <label class="font-semibold">Fecha límite</label>
+
+                    <p-datepicker [(ngModel)]="nuevoTicket.dueDate" dateFormat="dd/mm/yy" class="w-full">
+                    </p-datepicker>
+
+                </div>
 
             </div>
-        </p-card>
-        <div class="flex justify-end gap-2">
-            <p-button label="Cancel" severity="secondary" (click)="visible = false" />
-            <p-button type="button" label="Save" pRipple (click)="visible = false" (click)="showSuccess()"
-                severity="success" />
+
+            <ng-template pTemplate="footer">
+
+                <p-button label="Cancelar" icon="pi pi-times" severity="secondary" (click)="mostrarCrearTicket=false">
+                </p-button>
+
+                <p-button label="Crear Ticket" icon="pi pi-check" severity="success" (click)="crearTicket()">
+                </p-button>
+
+            </ng-template>
+
+        </p-dialog>
+
+
+        <!--  -->
+
+
+
+        <!-- Switch Kanban/Tabla -->
+        <div class="flex gap-2 mb-4">
+            <button (click)="mostrarKanban = true"
+                [ngClass]="{'bg-blue-600 text-white': mostrarKanban, 'bg-gray-200 text-gray-700': !mostrarKanban}"
+                class="px-4 py-2 rounded shadow font-semibold focus:outline-none">Kanban</button>
+            <button (click)="mostrarKanban = false"
+                [ngClass]="{'bg-blue-600 text-white': !mostrarKanban, 'bg-gray-200 text-gray-700': mostrarKanban}"
+                class="px-4 py-2 rounded shadow font-semibold focus:outline-none">Tabla</button>
         </div>
-    </p-dialog>
+
+        <!-- 3. Tablero Kanban -->
+        <div *ngIf="mostrarKanban" class="bg-white rounded-xl shadow p-6 w-full">
+            <h3 class="text-xl font-bold mb-6 text-slate-800">Tablero Kanban</h3>
+            <div class="flex gap-6 overflow-x-auto pb-4">
+                <!-- Pendiente -->
+                <div class="bg-slate-50 p-4 rounded-xl border border-slate-200 min-w-[320px] flex-1" pDroppable="task"
+                    (onDrop)="drop(pendiente)">
+                    <div class="flex justify-between mb-4">
+                        <h4 class="font-bold">Pendiente</h4>
+                        <span>{{pendiente.length}}</span>
+                    </div>
+
+                    <div *ngFor="let task of pendiente" pDraggable="task"
+                        [pDraggableDisabled]="!hasPermission('tickets:editar')" (onDragStart)="dragStart(task)"
+                        class="mb-3 cursor-move shadow-sm hover:shadow-md border rounded-lg bg-white p-4"
+                        (click)="selectTask(task)">
+                        <h5 class="font-semibold">#{{task.id}} {{task.title}}</h5>
+                        <div class="flex justify-between mt-3">
+                            <span class="text-xs bg-blue-100 px-2 py-1 rounded">
+                                {{task.priority}}
+                            </span>
+                            <span class="text-sm text-gray-500">
+                                {{task.assignee}}
+                            </span>
+                            <span class="text-sm text-gray-500">
+                                {{task.dueDate | date:'shortDate'}}
+                            </span>
+                        </div>
+                    </div>
+                </div>
+                <!-- En progreso -->
+                <div class="bg-slate-50 p-4 rounded-xl border min-w-[320px] flex-1" pDroppable="task"
+                    (onDrop)="drop(progreso)">
+                    <div class="flex justify-between mb-4">
+                        <h4 class="font-bold">En Progreso</h4>
+                        <span>{{progreso.length}}</span>
+                    </div>
+                    <div *ngFor="let task of progreso" pDraggable="task"
+                        [pDraggableDisabled]="!hasPermission('tickets:editar')" (onDragStart)="dragStart(task)"
+                        class="mb-3 cursor-move shadow-sm hover:shadow-md border rounded-lg bg-white p-4"
+                        (click)="selectTask(task)">
+                        <h5 class="font-semibold">#{{task.id}} {{task.title}}</h5>
+                        <div class="flex justify-between mt-3">
+                            <span class="text-xs bg-blue-100 px-2 py-1 rounded">
+                                {{task.priority}}
+                            </span>
+                            <span class="text-sm text-gray-500">
+                                {{task.assignee}}
+                            </span>
+                            <span class="text-sm text-gray-500">
+                                {{task.dueDate | date:'shortDate'}}
+                            </span>
+                        </div>
+                    </div>
+                </div>
+                <!-- Revision -->
+                <div class="bg-slate-50 p-4 rounded-xl border min-w-[320px] flex-1" pDroppable="task"
+                    (onDrop)="drop(revision)">
+                    <div class="flex justify-between mb-4">
+                        <h4 class="font-bold">Revisión</h4>
+                        <span>{{revision.length}}</span>
+                    </div>
+                    <div *ngFor="let task of revision" pDraggable="task"
+                        [pDraggableDisabled]="!hasPermission('tickets:editar')" (onDragStart)="dragStart(task)"
+                        class="mb-3 cursor-move shadow-sm hover:shadow-md border rounded-lg bg-white p-4"
+                        (click)="selectTask(task)">
+                        <h5>#{{task.id}} {{task.title}}</h5>
+                        <div class="flex justify-between mt-3">
+                            <span class="text-xs bg-blue-100 px-2 py-1 rounded">
+                                {{task.priority}}
+                            </span>
+                            <span class="text-sm text-gray-500">
+                                {{task.assignee}}
+                            </span>
+                            <span class="text-sm text-gray-500">
+                                {{task.dueDate | date:'shortDate'}}
+                            </span>
+                        </div>
+                    </div>
+                </div>
+                <!-- Hecho -->
+                <div class="bg-slate-50 p-4 rounded-xl border min-w-[320px] flex-1" pDroppable="task"
+                    (onDrop)="drop(hecho)">
+                    <div class="flex justify-between mb-4">
+                        <h4 class="font-bold">Hecho</h4>
+                        <span>{{hecho.length}}</span>
+                    </div>
+                    <div *ngFor="let task of hecho" pDraggable="task"
+                        [pDraggableDisabled]="!hasPermission('tickets:editar')" (onDragStart)="dragStart(task)"
+                        class="mb-3 cursor-move shadow-sm hover:shadow-md border rounded-lg bg-white p-4">
+                        <h5>#{{task.id}} {{task.title}}</h5>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tabla con filtros -->
+        <div *ngIf="!mostrarKanban">
 
 
 
-    <div class="card">
-        <p-table [value]="grupos" [tableStyle]="{ 'min-width': '50rem' }">
-            <ng-template #header>
-                <tr>
-                    <th>Code</th>
-                    <th>Name</th>
-                    <th>Nivel</th>
-                    <th>Integrantes</th>
-                </tr>
-            </ng-template>
-            <ng-template #body let-grupo>
-                <tr>
-                    <td>{{ grupo.id }}</td>
-                    <td>{{ grupo.nombre }}</td>
-                    <td>{{ grupo.nivel }}</td>
-                    <td>{{ grupo.integrantes }}</td>
-                </tr>
-            </ng-template>
-        </p-table>
+
+            <p-panel *ngIf="selectedTask"
+                [header]="'Detalle de Ticket (#' + selectedTask.id + ' ' + selectedTask.title + ')'"
+                style="position: relative;">
+                <!-- Botón cerrar vista -->
+                <button (click)="selectedTask = null" title="Cerrar"
+                    style="position: absolute; top: 1rem; right: 1rem; background: none; border: none; font-size: 1.5rem; color: #888; cursor: pointer; z-index: 10;">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+                <div class="flex flex-col md:flex-row gap-6"> <!-- Main Info -->
+                    <div class="flex-2 md:w-2/3">
+                        <div
+                            class="bg-slate-50 p-5 rounded-xl border border-slate-200 mb-6 font-medium text-slate-700 text-lg leading-relaxed shadow-sm">
+                            {{selectedTask.description}}
+
+                        </div>
+
+
+                        <div *ngFor="let comment of selectedTask.comments"
+                            class="border-l-4 border-blue-500 bg-slate-50 p-4 rounded-r-xl mb-4 shadow-sm">
+
+                            <strong class="text-slate-800">
+                                {{comment.user}}
+                            </strong>
+
+                            <span class="text-slate-400 text-sm ml-2">
+                                {{comment.date | date:'short'}}
+                            </span>
+
+                            <p class="mt-2 mb-0 text-slate-600">
+                                {{comment.message}}
+                            </p>
+
+                        </div>
+
+
+
+
+
+                        <h4 class="font-bold text-xl mt-6 mb-4">
+                            Historial
+                        </h4>
+
+                        <div *ngFor="let h of selectedTask.history" class="text-sm text-slate-600 border-b py-2">
+
+                            <strong>{{h.user}}</strong>
+                            {{h.action}}
+
+                            <span class="text-slate-400 ml-2">
+                                {{h.date | date:'short'}}
+                            </span>
+
+                        </div>
+
+
+
+                        <span>Prioridad:
+                            {{selectedTask.priority}}
+                        </span>
+                        <p-card class="mt-4" header="Estado actual : ">
+                            {{selectedTask.status}}
+                        </p-card>
+
+
+
+                        <div class="flex flex-col gap-3 mt-6">
+
+
+                            <textarea [(ngModel)]="newComment" pInputText rows="3"
+                                class="w-full p-3 border border-slate-300 rounded-lg" placeholder="Añade un comentario">
+</textarea>
+
+                            <p-button label="Enviar Comentario" icon="pi pi-send" (click)="addComment()">
+                            </p-button>
+                        </div>
+                    </div>
+
+
+
+                    <!-- Side Info -->
+                    <div class="flex-1 md:w-1/3 bg-slate-50 p-6 rounded-xl border border-slate-200 shadow-sm">
+                        <div class="mb-5"> <label
+                                class="block text-slate-500 font-bold mb-2 text-sm uppercase tracking-wide">Estado</label>
+                            <select
+                                class="w-full p-2.5 border border-slate-300 rounded-lg bg-white text-slate-700 font-medium outline-none focus:ring-2 focus:border-blue-500 cursor-pointer">
+                                <option>Pendiente</option>
+                                <option selected>En progreso</option>
+                                <option>Revisión</option>
+                                <option>Hecho</option>
+                            </select>
+                        </div>
+                        <div class="mb-5"> <label
+                                class="block text-slate-500 font-bold mb-2 text-sm uppercase tracking-wide">Asignado
+                                A</label> <select
+                                class="w-full p-2.5 border border-slate-300 rounded-lg bg-white text-slate-700 font-medium outline-none focus:ring-2 focus:border-blue-500 cursor-pointer">
+                                <option>Nadie</option>
+                                <option selected>Juan P.</option>
+                                <option>Ana M.</option>
+                            </select> </div>
+                        <div class="mb-5"> <label
+                                class="block text-slate-500 font-bold mb-2 text-sm uppercase tracking-wide">Prioridad</label>
+                            <select
+                                class="w-full p-2.5 border border-slate-300 rounded-lg bg-white text-slate-700 font-medium outline-none focus:ring-2 focus:border-blue-500 cursor-pointer">
+                                <option>Más Baja</option>
+                                <option>Baja</option>
+                                <option>Media-Baja</option>
+                                <option selected>Media</option>
+                                <option>Media-Alta</option>
+                                <option>Alta</option>
+                                <option> (Crítica)</option>
+                            </select>
+                        </div>
+                        <div class="mb-5"> <label
+                                class="block text-slate-500 font-bold mb-1 text-sm uppercase tracking-wide">Creado</label>
+                            <div class="font-semibold text-slate-800 text-lg">10/03/2026</div>
+                        </div>
+                        <div> <label
+                                class="block text-slate-500 font-bold mb-2 text-sm uppercase tracking-wide">Límite</label>
+                            <input type="date"
+                                class="w-full p-2.5 border border-slate-300 rounded-lg bg-white text-slate-700 font-medium outline-none focus:ring-2 focus:border-blue-500 cursor-pointer"
+                                value="2026-03-12">
+                        </div>
+                    </div>
+                </div> <ng-template pTemplate="footer">
+                    <div class="flex justify-end gap-3 w-full border-t border-slate-100 pt-4 mt-4"> <p-button
+                            label="Eliminar Ticket" icon="pi pi-trash" severity="danger" [outlined]="true"></p-button>
+                        <p-button label="Guardar Cambios" icon="pi pi-check" severity="success"></p-button>
+                    </div>
+                </ng-template>
+            </p-panel>
+
+
+
+
+
+
+
+            <p-table #dt [value]="filteredTickets" dataKey="id" [paginator]="true" [rows]="10"
+                [rowsPerPageOptions]="[5,10,20]" [globalFilterFields]="['title','assignee','status','priority']"
+                responsiveLayout="scroll">
+
+                <!-- buscador -->
+                <ng-template pTemplate="caption">
+                    <div class="flex justify-between">
+
+                        <input pInputText type="text" placeholder="Buscar ticket..."
+                            (input)="dt.filterGlobal($event.target.value,'contains')" class="w-64" />
+
+                    </div>
+                    <br>
+                    <div class="flex gap-2 mb-3">
+
+                        <p-button label="Todos" icon="pi pi-list" severity="secondary" (click)="mostrarTodos()">
+                        </p-button>
+
+                        <p-button label="Mis Tickets" icon="pi pi-user" severity="info" (click)="misTickets()">
+                        </p-button>
+
+                        <p-button label="Sin asignar" icon="pi pi-user-minus" severity="warn"
+                            (click)="ticketsSinAsignar()">
+                        </p-button>
+
+                        <p-button label="Prioridad Alta" icon="pi pi-exclamation-triangle" severity="danger"
+                            (click)="ticketsAltaPrioridad()">
+                        </p-button>
+
+                    </div>
+                </ng-template>
+
+                <!-- header -->
+                <ng-template pTemplate="header">
+                    <tr>
+
+                        <th pSortableColumn="id">
+                            ID
+                            <p-sortIcon field="id"></p-sortIcon>
+                        </th>
+
+                        <th pSortableColumn="title">
+                            Título
+                            <p-sortIcon field="title"></p-sortIcon>
+                        </th>
+
+                        <th>Asignado</th>
+
+                        <th>
+                            Estado
+                            <p-columnFilter field="status" matchMode="equals" [showMenu]="false">
+                            </p-columnFilter>
+                        </th>
+
+                        <th>
+                            Prioridad
+                            <p-columnFilter field="priority" matchMode="equals" [showMenu]="false">
+                            </p-columnFilter>
+                        </th>
+
+                        <th pSortableColumn="dueDate">
+                            Fecha límite
+                            <p-sortIcon field="dueDate"></p-sortIcon>
+                        </th>
+
+                        <th>Acción</th>
+
+                    </tr>
+                </ng-template>
+
+                <!-- body -->
+                <ng-template pTemplate="body" let-ticket>
+
+                    <tr>
+
+                        <td>#{{ticket.id}}</td>
+
+                        <td>{{ticket.title}}</td>
+
+                        <td>{{ticket.assignee}}</td>
+
+                        <td>
+                            <p-tag [value]="ticket.status" [severity]="
+ticket.status === 'Pendiente' ? 'warn' :
+ticket.status === 'En progreso' ? 'info' :
+ticket.status === 'Revisión' ? 'secondary' :
+'success'
+">
+                            </p-tag>
+                        </td>
+
+                        <td>
+                            <p-tag [value]="ticket.priority" [severity]="
+ticket.priority === 'Crítica' ? 'danger' :
+ticket.priority === 'Alta' ? 'warn' :
+ticket.priority === 'Media' ? 'info' :
+'success'
+">
+                            </p-tag>
+                        </td>
+
+                        <td>
+                            {{ticket.dueDate | date:'shortDate'}}
+                        </td>
+
+                        <td>
+
+                            <p-button icon="pi pi-eye" severity="info" [outlined]="true" (click)="selectTask(ticket)">
+                            </p-button>
+
+                        </td>
+
+                    </tr>
+
+                </ng-template>
+
+            </p-table>
+
+
+
+
+
+
+
+        </div>
+
     </div>
+    <style>
+        .secciones {
+            display: flex;
+            gap: 20px;
+            padding: 20px;
+        }
 
+        .p-floatlabel {
 
-
-</div>
-<style>
-    .secciones {
-        display: flex;
-        gap: 20px;
-        padding: 20px;
-    }
-
-
-    .p-floatlabel {
-
-        margin-bottom: 2rem;
-    }
-</style>
+            margin-bottom: 2rem;
+        }
+    </style>

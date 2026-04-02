@@ -7,6 +7,7 @@ import { Home } from './pages/home/home/home';
 import { Sidebar } from './components/sidebar/sidebar';
 import { Usuarios } from './pages/usuarios/usuarios';
 import { Grupos } from './pages/grupos/grupos';
+import { GestionUsuarios } from './pages/gestion-usuarios/gestion-usuarios';
 
 export const routes: Routes = [
     {
@@ -26,7 +27,9 @@ export const routes: Routes = [
     children: [
       {path: 'home', component: Home},
       {path: 'usuarios', component: Usuarios},
+      {path: 'gestion-usuarios', component: GestionUsuarios},
       {path: 'grupos', component: Grupos},
+      {path: 'grupos/:grupo', component: Grupos},
 
     ]
     

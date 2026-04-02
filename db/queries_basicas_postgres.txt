@@ -1,0 +1,385 @@
+SET search_path TO erp, public;
+
+============================================================
+AUTH / LOGIN / REGISTER
+============================================================
+
+1) LOGIN: validar credenciales + rol + permisos
+Parametros:
+  $1 = email
+  $2 = password plano
+
+SELECT
+  u.id,
+  u.email,
+  u.full_name,
+  r.code AS role_code,
+  ARRAY_REMOVE(ARRAY_AGG(DISTINCT p.code), NULL) AS permissions
+FROM erp.users u
+LEFT JOIN erp.user_roles ur ON ur.user_id = u.id
+LEFT JOIN erp.roles r ON r.id = ur.role_id
+LEFT JOIN erp.role_permissions rp ON rp.role_id = r.id
+LEFT JOIN erp.permissions p ON p.id = rp.permission_id
+WHERE u.email = $1
+  AND u.is_active = TRUE
+  AND u.password_hash = crypt($2, u.password_hash)
+GROUP BY u.id, u.email, u.full_name, r.code;
+
+------------------------------------------------------------
+
+2) REGISTER: crear usuario
+Parametros:
+  $1 = email
+  $2 = password plano
+  $3 = username
+  $4 = full_name
+  $5 = phone
+  $6 = address
+
+INSERT INTO erp.users (
+  email, password_hash, username, full_name, phone, address, is_adult, accepted_terms
+)
+VALUES (
+  $1, crypt($2, gen_salt('bf')), $3, $4, $5, $6, TRUE, TRUE
+)
+RETURNING id, email, full_name, created_at;
+
+------------------------------------------------------------
+
+3) ASIGNAR ROL BASE AL NUEVO USUARIO
+Parametro:
+  $1 = user_id
+
+INSERT INTO erp.user_roles (user_id, role_id)
+SELECT $1, r.id
+FROM erp.roles r
+WHERE r.code = 'user'
+ON CONFLICT DO NOTHING;
+
+------------------------------------------------------------
+
+4) VALIDAR SI EMAIL YA EXISTE
+Parametro:
+  $1 = email
+
+SELECT EXISTS (
+  SELECT 1
+  FROM erp.users
+  WHERE email = $1
+) AS email_exists;
+
+
+============================================================
+USUARIOS
+============================================================
+
+5) LISTAR USUARIOS CON ROLES
+SELECT
+  u.id,
+  u.email,
+  u.full_name,
+  u.phone,
+  u.is_active,
+  ARRAY_REMOVE(ARRAY_AGG(DISTINCT r.code), NULL) AS roles
+FROM erp.users u
+LEFT JOIN erp.user_roles ur ON ur.user_id = u.id
+LEFT JOIN erp.roles r ON r.id = ur.role_id
+GROUP BY u.id
+ORDER BY u.id DESC;
+
+------------------------------------------------------------
+
+6) DETALLE DE USUARIO + PERMISOS EFECTIVOS
+Parametro:
+  $1 = user_id
+
+SELECT
+  u.id,
+  u.email,
+  u.full_name,
+  ARRAY_REMOVE(ARRAY_AGG(DISTINCT r.code), NULL) AS roles,
+  ARRAY_REMOVE(ARRAY_AGG(DISTINCT p.code), NULL) AS permissions
+FROM erp.users u
+LEFT JOIN erp.user_roles ur ON ur.user_id = u.id
+LEFT JOIN erp.roles r ON r.id = ur.role_id
+LEFT JOIN erp.role_permissions rp ON rp.role_id = r.id
+LEFT JOIN erp.permissions p ON p.id = rp.permission_id
+WHERE u.id = $1
+GROUP BY u.id;
+
+------------------------------------------------------------
+
+7) ACTUALIZAR PERFIL USUARIO
+Parametros:
+  $1 = user_id
+  $2 = full_name
+  $3 = phone
+  $4 = address
+
+UPDATE erp.users
+SET full_name = $2,
+    phone = $3,
+    address = $4
+WHERE id = $1
+RETURNING id, email, full_name, phone, address, updated_at;
+
+------------------------------------------------------------
+
+8) DESACTIVAR USUARIO (SOFT DELETE)
+Parametro:
+  $1 = user_id
+
+UPDATE erp.users
+SET is_active = FALSE
+WHERE id = $1
+RETURNING id, email, is_active, updated_at;
+
+
+============================================================
+GRUPOS
+============================================================
+
+9) LISTAR GRUPOS CON TOTAL DE INTEGRANTES Y TICKETS
+SELECT
+  g.id,
+  g.slug,
+  g.name,
+  g.level_name,
+  g.description,
+  COUNT(DISTINCT gm.user_id) AS integrantes,
+  COUNT(DISTINCT t.id) AS tickets
+FROM erp.groups g
+LEFT JOIN erp.group_members gm ON gm.group_id = g.id
+LEFT JOIN erp.tickets t ON t.group_id = g.id
+GROUP BY g.id
+ORDER BY g.id;
+
+------------------------------------------------------------
+
+10) CREAR GRUPO
+Parametros:
+  $1 = slug
+  $2 = name
+  $3 = level_name
+  $4 = description
+
+INSERT INTO erp.groups (slug, name, level_name, description)
+VALUES ($1, $2, $3, $4)
+RETURNING *;
+
+------------------------------------------------------------
+
+11) AGREGAR INTEGRANTE A GRUPO
+Parametros:
+  $1 = group_id
+  $2 = user_id
+
+INSERT INTO erp.group_members (group_id, user_id)
+VALUES ($1, $2)
+ON CONFLICT DO NOTHING;
+
+------------------------------------------------------------
+
+12) OBTENER GRUPO POR SLUG (/grupos/:grupo)
+Parametro:
+  $1 = slug
+
+SELECT *
+FROM erp.groups
+WHERE slug = $1
+  AND is_active = TRUE;
+
+
+============================================================
+TICKETS / KANBAN
+============================================================
+
+13) CREAR TICKET
+Parametros:
+  $1 = public_id
+  $2 = group_id
+  $3 = title
+  $4 = description
+  $5 = priority ('Baja'|'Media'|'Alta'|'Critica')
+  $6 = created_by (user_id)
+  $7 = assignee_id (nullable)
+  $8 = due_date
+
+INSERT INTO erp.tickets (
+  public_id, group_id, title, description, status, priority, created_by, assignee_id, due_date
+)
+VALUES (
+  $1, $2, $3, $4, 'Pendiente', $5::ticket_priority, $6, $7, $8
+)
+RETURNING *;
+
+------------------------------------------------------------
+
+14) LISTAR TICKETS DE UN GRUPO
+Parametro:
+  $1 = group_id
+
+SELECT
+  t.id,
+  t.public_id,
+  t.title,
+  t.description,
+  t.status,
+  t.priority,
+  creator.full_name AS created_by_name,
+  assignee.full_name AS assignee_name,
+  t.created_at,
+  t.due_date
+FROM erp.tickets t
+LEFT JOIN erp.users creator ON creator.id = t.created_by
+LEFT JOIN erp.users assignee ON assignee.id = t.assignee_id
+WHERE t.group_id = $1
+ORDER BY t.created_at DESC;
+
+------------------------------------------------------------
+
+15) CAMBIAR ESTADO TICKET
+Parametros:
+  $1 = ticket_id
+  $2 = new_status ('Pendiente'|'En progreso'|'Revision'|'Hecho')
+
+UPDATE erp.tickets
+SET status = $2::ticket_status
+WHERE id = $1
+RETURNING id, title, status, updated_at;
+
+------------------------------------------------------------
+
+16) REASIGNAR TICKET
+Parametros:
+  $1 = ticket_id
+  $2 = assignee_id (nullable)
+
+UPDATE erp.tickets
+SET assignee_id = $2
+WHERE id = $1
+RETURNING id, title, assignee_id, updated_at;
+
+------------------------------------------------------------
+
+17) MIS TICKETS
+Parametro:
+  $1 = user_id
+
+SELECT *
+FROM erp.tickets
+WHERE assignee_id = $1
+ORDER BY created_at DESC;
+
+------------------------------------------------------------
+
+18) TICKETS SIN ASIGNAR
+SELECT *
+FROM erp.tickets
+WHERE assignee_id IS NULL
+ORDER BY created_at DESC;
+
+------------------------------------------------------------
+
+19) TICKETS ALTA PRIORIDAD
+SELECT *
+FROM erp.tickets
+WHERE priority IN ('Alta', 'Critica')
+ORDER BY created_at DESC;
+
+
+============================================================
+COMENTARIOS E HISTORIAL
+============================================================
+
+20) AGREGAR COMENTARIO A TICKET
+Parametros:
+  $1 = ticket_id
+  $2 = user_id
+  $3 = message
+
+INSERT INTO erp.ticket_comments (ticket_id, user_id, message)
+VALUES ($1, $2, $3)
+RETURNING *;
+
+------------------------------------------------------------
+
+21) VER COMENTARIOS DE TICKET
+Parametro:
+  $1 = ticket_id
+
+SELECT
+  c.id,
+  c.message,
+  c.created_at,
+  u.full_name AS user_name
+FROM erp.ticket_comments c
+LEFT JOIN erp.users u ON u.id = c.user_id
+WHERE c.ticket_id = $1
+ORDER BY c.created_at ASC;
+
+------------------------------------------------------------
+
+22) REGISTRAR EVENTO EN HISTORIAL
+Parametros:
+  $1 = ticket_id
+  $2 = user_id
+  $3 = action
+
+INSERT INTO erp.ticket_history (ticket_id, user_id, action)
+VALUES ($1, $2, $3);
+
+------------------------------------------------------------
+
+23) VER HISTORIAL DE TICKET
+Parametro:
+  $1 = ticket_id
+
+SELECT
+  h.id,
+  h.action,
+  h.created_at,
+  u.full_name AS user_name
+FROM erp.ticket_history h
+LEFT JOIN erp.users u ON u.id = h.user_id
+WHERE h.ticket_id = $1
+ORDER BY h.created_at ASC;
+
+
+============================================================
+DASHBOARD / METRICAS
+============================================================
+
+24) CONTEO DE TICKETS POR STATUS
+SELECT status, COUNT(*) AS total
+FROM erp.tickets
+GROUP BY status
+ORDER BY status;
+
+------------------------------------------------------------
+
+25) CONTEO DE TICKETS POR PRIORIDAD
+SELECT priority, COUNT(*) AS total
+FROM erp.tickets
+GROUP BY priority
+ORDER BY priority;
+
+------------------------------------------------------------
+
+26) TICKETS VENCIDOS
+SELECT *
+FROM erp.tickets
+WHERE due_date IS NOT NULL
+  AND due_date < NOW()
+  AND status <> 'Hecho'
+ORDER BY due_date ASC;
+
+
+============================================================
+NOTAS RAPIDAS
+============================================================
+
+- Si vas a usar filtros con acentos desde frontend, recuerda que en DB los enums estan sin acento:
+  'Revision' y 'Critica'.
+- Siempre ejecutar al inicio:
+  SET search_path TO erp, public;

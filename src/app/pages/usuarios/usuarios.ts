@@ -5,12 +5,14 @@ import { ButtonModule } from 'primeng/button';
 import { CardModule } from 'primeng/card';
 import { FormBuilder, FormGroup, Validators, AbstractControl } from '@angular/forms';
 
+
 import { MessageService } from 'primeng/api';
 import { FormsModule } from '@angular/forms';
 import { FloatLabelModule } from 'primeng/floatlabel';
 import { InputTextModule } from 'primeng/inputtext';
 import { RippleModule } from 'primeng/ripple';
 import { HasPermissionDirective } from "../../directives/has-permission.directive";
+import { GestionUsuarios } from '../gestion-usuarios/gestion-usuarios';
 
 @Component({
   selector: 'app-usuarios',
@@ -23,7 +25,8 @@ import { HasPermissionDirective } from "../../directives/has-permission.directiv
     FormsModule,
     FloatLabelModule,
     ToastModule,
-    HasPermissionDirective
+    HasPermissionDirective,
+    GestionUsuarios,
 ],
   providers: [MessageService],
   templateUrl: './usuarios.html',

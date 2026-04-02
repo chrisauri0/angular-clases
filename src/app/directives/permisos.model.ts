@@ -24,7 +24,8 @@ export const PermisoBase = [
     "tickets:ver",
     "grupos:ver",
     "usuarios:ver",
-    "usuarios:editar"
+    "usuarios:editar",
+    "tickets:crear",
 ];
 
 export const PermisoAdmin = [

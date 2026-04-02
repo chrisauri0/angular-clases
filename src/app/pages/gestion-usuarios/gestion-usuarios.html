@@ -1,0 +1,67 @@
+<div class="max-w-6xl mx-auto p-6">
+	<h1 class="text-2xl font-bold mb-6 text-slate-800">Gestión de Usuarios (SuperAdmin)</h1>
+	<div class="flex justify-end mb-4">
+		<button pButton type="button" icon="pi pi-plus" label="Crear Usuario" class="p-button-success"></button>
+	</div>
+	<p-table [value]="usuarios" class="p-datatable-sm p-datatable-striped" [tableStyle]="{ 'min-width': '50rem' }">
+		<ng-template pTemplate="header">
+			<tr>
+				<th>Nombre</th>
+				<th>Email</th>
+				<th>Permisos</th>
+				<th>Acciones</th>
+			</tr>
+		</ng-template>
+		<ng-template pTemplate="body" let-usuario>
+			<tr>
+				<td class="font-semibold text-slate-700">{{ usuario.nombre }}</td>
+				<td class="text-slate-500">{{ usuario.email }}</td>
+				<td>
+					<div class="flex flex-wrap gap-2">
+						<p-tag *ngFor="let permiso of usuario.permisos" [value]="permiso" severity="info"></p-tag>
+					</div>
+				</td>
+				<td>
+					<button pButton type="button" icon="pi pi-pencil"
+						class="p-button-rounded p-button-info p-button-sm mr-2" title="Editar"
+						(click)="abrirEditarUsuario(usuario)"></button>
+					<button pButton type="button" icon="pi pi-key"
+						class="p-button-rounded p-button-warning p-button-sm mr-2" title="Permisos"></button>
+					<button pButton type="button" icon="pi pi-trash"
+						class="p-button-rounded p-button-danger p-button-sm" title="Eliminar"></button>
+				</td>
+			</tr>
+		</ng-template>
+		<ng-template pTemplate="emptymessage">
+			<tr>
+				<td colspan="4" class="text-center text-slate-400">No hay usuarios registrados.</td>
+			</tr>
+		</ng-template>
+	</p-table>
+
+	<!-- Modal para editar usuario -->
+	<p-dialog header="Editar Usuario" [(visible)]="mostrarEditarUsuario" [modal]="true" [style]="{width: '400px'}"
+		[draggable]="false" [resizable]="false">
+		<div class="flex flex-col gap-4" *ngIf="usuarioSeleccionado">
+			<div>
+				<label class="font-semibold">Nombre</label>
+				<input pInputText [(ngModel)]="usuarioSeleccionado.nombre" class="w-full">
+			</div>
+			<div>
+				<label class="font-semibold">Email</label>
+				<input pInputText [(ngModel)]="usuarioSeleccionado.email" class="w-full">
+			</div>
+			<div>
+				<label class="font-semibold">Permisos</label>
+				<p-multiSelect [options]="permisosDisponibles" [(ngModel)]="usuarioSeleccionado.permisos"
+					defaultLabel="Selecciona permisos" class="w-full"></p-multiSelect>
+			</div>
+		</div>
+		<ng-template pTemplate="footer">
+			<p-button label="Cancelar" icon="pi pi-times" severity="secondary"
+				(click)="mostrarEditarUsuario=false"></p-button>
+			<p-button label="Guardar" icon="pi pi-check" severity="success"
+				(click)="guardarUsuarioEditado()"></p-button>
+		</ng-template>
+	</p-dialog>
+</div>

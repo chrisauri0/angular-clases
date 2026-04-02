@@ -12,6 +12,7 @@ import { PanelMenuModule } from 'primeng/panelmenu';
 })
 export class Sidebar {
 items = [
+  { label: 'Home', icon: 'pi pi-home', routerLink: '/home' },
   { label: 'Usuarios', icon: 'pi pi-user', routerLink: '/usuarios' },
   { label: 'Grupos', icon: 'pi pi-users', routerLink: '/grupos' },
   { label: 'Cerrar Sesión', icon: 'pi pi-sign-out', routerLink: '/login' },
