@@ -2,5 +2,10 @@
   command = "pnpm run build"
   publish = "dist/ERP/browser"
 
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
+
 [[plugins]]
   package = "@netlify/angular-runtime"
