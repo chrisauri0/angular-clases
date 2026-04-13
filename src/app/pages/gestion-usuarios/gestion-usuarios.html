@@ -1,24 +1,37 @@
 <div class="max-w-6xl mx-auto p-6">
 	<h1 class="text-2xl font-bold mb-6 text-slate-800">Gestión de Usuarios (SuperAdmin)</h1>
-	<div class="flex justify-end mb-4">
-		<button pButton type="button" icon="pi pi-plus" label="Crear Usuario" class="p-button-success"></button>
+
+	@if (errorMessage) {
+		<div class="msg error mb-4">{{ errorMessage }}</div>
+	}
+	@if (successMessage) {
+		<div class="msg success mb-4">{{ successMessage }}</div>
+	}
+
+	<div class="flex justify-end mb-4 gap-2">
+		<button pButton type="button" icon="pi pi-refresh" label="Recargar" class="p-button-secondary"
+			(click)="loadInitialData()" [disabled]="loading"></button>
 	</div>
+
 	<p-table [value]="usuarios" class="p-datatable-sm p-datatable-striped" [tableStyle]="{ 'min-width': '50rem' }">
 		<ng-template pTemplate="header">
 			<tr>
 				<th>Nombre</th>
 				<th>Email</th>
+				<th>Creado</th>
 				<th>Permisos</th>
 				<th>Acciones</th>
 			</tr>
 		</ng-template>
 		<ng-template pTemplate="body" let-usuario>
 			<tr>
-				<td class="font-semibold text-slate-700">{{ usuario.nombre }}</td>
+				<td class="font-semibold text-slate-700">{{ usuario.name }}</td>
 				<td class="text-slate-500">{{ usuario.email }}</td>
+				<td class="text-slate-500">{{ usuario.created_at | date: 'shortDate' }}</td>
 				<td>
 					<div class="flex flex-wrap gap-2">
-						<p-tag *ngFor="let permiso of usuario.permisos" [value]="permiso" severity="info"></p-tag>
+						<p-tag *ngFor="let permiso of usuario.permissions" [value]="permiso" severity="info"></p-tag>
+						<span class="text-slate-400" *ngIf="!usuario.permissions?.length">Sin permisos cargados</span>
 					</div>
 				</td>
 				<td>
@@ -26,15 +39,14 @@
 						class="p-button-rounded p-button-info p-button-sm mr-2" title="Editar"
 						(click)="abrirEditarUsuario(usuario)"></button>
 					<button pButton type="button" icon="pi pi-key"
-						class="p-button-rounded p-button-warning p-button-sm mr-2" title="Permisos"></button>
-					<button pButton type="button" icon="pi pi-trash"
-						class="p-button-rounded p-button-danger p-button-sm" title="Eliminar"></button>
+						class="p-button-rounded p-button-warning p-button-sm mr-2" title="Permisos"
+						(click)="abrirAsignarPermisos(usuario)"></button>
 				</td>
 			</tr>
 		</ng-template>
 		<ng-template pTemplate="emptymessage">
 			<tr>
-				<td colspan="4" class="text-center text-slate-400">No hay usuarios registrados.</td>
+				<td colspan="5" class="text-center text-slate-400">No hay usuarios registrados.</td>
 			</tr>
 		</ng-template>
 	</p-table>
@@ -45,16 +57,11 @@
 		<div class="flex flex-col gap-4" *ngIf="usuarioSeleccionado">
 			<div>
 				<label class="font-semibold">Nombre</label>
-				<input pInputText [(ngModel)]="usuarioSeleccionado.nombre" class="w-full">
+				<input pInputText [(ngModel)]="usuarioSeleccionado.name" class="w-full">
 			</div>
 			<div>
 				<label class="font-semibold">Email</label>
 				<input pInputText [(ngModel)]="usuarioSeleccionado.email" class="w-full">
-			</div>
-			<div>
-				<label class="font-semibold">Permisos</label>
-				<p-multiSelect [options]="permisosDisponibles" [(ngModel)]="usuarioSeleccionado.permisos"
-					defaultLabel="Selecciona permisos" class="w-full"></p-multiSelect>
 			</div>
 		</div>
 		<ng-template pTemplate="footer">
@@ -62,6 +69,82 @@
 				(click)="mostrarEditarUsuario=false"></p-button>
 			<p-button label="Guardar" icon="pi pi-check" severity="success"
 				(click)="guardarUsuarioEditado()"></p-button>
+		</ng-template>
+	</p-dialog>
+
+	<p-dialog header="Asignar Permisos por Grupo" [(visible)]="mostrarAsignarPermisos" [modal]="true"
+		[style]="{width: '620px'}" [draggable]="false" [resizable]="false" [contentStyle]="{ overflow: 'visible' }">
+		<div class="flex flex-col gap-4" *ngIf="usuarioPermisosSeleccionado">
+			<div>
+				<label class="font-semibold">Usuario</label>
+				<input pInputText [ngModel]="usuarioPermisosSeleccionado.name + ' (' + usuarioPermisosSeleccionado.email + ')'"
+					[readonly]="true" class="w-full">
+			</div>
+
+			<div>
+				<label class="font-semibold">Grupos para asignar</label>
+				<p-multiSelect [options]="groupOptions" [(ngModel)]="gruposSeleccionadosIds" optionLabel="label"
+					optionValue="value" placeholder="Selecciona uno o varios grupos" class="w-full" appendTo="body"></p-multiSelect>
+			</div>
+
+			<div>
+				<label class="font-semibold">Ver permisos actuales por grupo</label>
+				<p-select [options]="groupOptions" [(ngModel)]="grupoVistaId" optionLabel="label" optionValue="value"
+					placeholder="Selecciona grupo para inspeccionar" class="w-full" appendTo="body"
+					(onChange)="onChangeGrupoPermisos()"></p-select>
+			</div>
+
+			<div>
+				<label class="font-semibold">Permisos del grupo</label>
+				<p-multiSelect [options]="permissionOptions" [(ngModel)]="permisosSeleccionados" optionLabel="label"
+					optionValue="value" placeholder="Selecciona permisos" class="w-full" appendTo="body"></p-multiSelect>
+			</div>
+
+			<div *ngIf="permisosActualesGrupo.length > 0">
+				<label class="font-semibold">Permisos actuales en este grupo</label>
+				<div class="flex flex-wrap gap-2 mt-2">
+					<p-tag *ngFor="let permiso of permisosActualesGrupo" [value]="permiso" severity="contrast"></p-tag>
+				</div>
+			</div>
+
+			<div>
+				<label class="font-semibold">Grupos donde ya pertenece con permisos</label>
+				<div class="mt-2" *ngIf="userGroupPermissionsRows.length > 0; else noMemberships">
+					<p-table [value]="userGroupPermissionsRows" [tableStyle]="{ 'min-width': '32rem' }">
+						<ng-template pTemplate="header">
+							<tr>
+								<th>Grupo</th>
+								<th>Permisos</th>
+								<th>Accion</th>
+							</tr>
+						</ng-template>
+						<ng-template pTemplate="body" let-row>
+							<tr>
+								<td>{{ row.groupName }}</td>
+								<td>
+									<div class="flex flex-wrap gap-2">
+										<p-tag *ngFor="let permiso of row.permissions" [value]="permiso" severity="info"></p-tag>
+									</div>
+								</td>
+								<td>
+									<button pButton type="button" icon="pi pi-pencil" class="p-button-sm p-button-text"
+										(click)="seleccionarGrupoParaEditar(row.groupId)"></button>
+								</td>
+							</tr>
+						</ng-template>
+					</p-table>
+				</div>
+				<ng-template #noMemberships>
+					<p class="text-slate-500 m-0 mt-2">Este usuario aun no tiene permisos en los grupos que puedes administrar.</p>
+				</ng-template>
+			</div>
+		</div>
+
+		<ng-template pTemplate="footer">
+			<p-button label="Cancelar" icon="pi pi-times" severity="secondary"
+				(click)="mostrarAsignarPermisos=false"></p-button>
+			<p-button label="Guardar permisos" icon="pi pi-check" severity="success"
+				(click)="guardarPermisosUsuario()"></p-button>
 		</ng-template>
 	</p-dialog>
 </div>

@@ -15,6 +15,21 @@
         </div> -->
     </section>
 
+    <section class="deploy-config p-px-6 p-pb-6">
+        <div class="deploy-card">
+            <h3 class="p-mb-2">Configuración rápida de despliegue</h3>
+            <p class="p-text-secondary p-mb-3">
+                Campo temporal para entrega: define <strong>url_produccion</strong> (tu túnel o dominio) y el sistema usará esa URL como base de API.
+            </p>
+
+            <div class="deploy-row">
+                <input pInputText [(ngModel)]="url_produccion" placeholder="https://mi-tunel.app" class="w-full" />
+                <button pButton type="button" label="Guardar url_produccion" icon="pi pi-check" (click)="saveProductionUrl()"></button>
+                <button pButton type="button" label="Limpiar" icon="pi pi-trash" severity="secondary" [outlined]="true" (click)="clearProductionUrl()"></button>
+            </div>
+        </div>
+    </section>
+
 
     <!-- <section class="features p-grid p-justify-center p-px-6 p-py-6">
 

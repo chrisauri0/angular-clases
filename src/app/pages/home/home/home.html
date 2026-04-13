@@ -1,32 +1,68 @@
 <div class="erp-container w-full min-h-screen bg-gradient-to-br from-blue-50 to-blue-200 p-8">
-    <h1 class="text-3xl font-bold text-slate-800 mb-6">
-        Bienvenido a tu Panel de Control, <span class="text-blue-700">Juan Pérez</span>
-    </h1>
+    <div class="hero-row mb-6">
+        <h1 class="text-3xl font-bold text-slate-800 m-0">
+            Dashboard de Operaciones
+        </h1>
+        <p-button label="Recargar" icon="pi pi-refresh" [outlined]="true" (click)="loadDashboardData()"
+            [disabled]="loading"></p-button>
+    </div>
 
-    <!-- Tarjetas de resumen -->
+    @if (errorMessage) {
+    <p-card styleClass="error-box mb-6">
+        <p class="m-0">{{ errorMessage }}</p>
+    </p-card>
+    }
+
     <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-10">
-        <div class="bg-white rounded-xl shadow p-6 flex flex-col items-center">
-            <div class="text-4xl font-bold text-blue-600 mb-2">24</div>
-            <div class="text-slate-500 font-semibold">Tickets Totales</div>
+        <div class="summary-card">
+            <div class="summary-value text-blue-600">{{ totalTickets }}</div>
+            <div class="summary-label">Tickets Totales</div>
         </div>
-        <div class="bg-white rounded-xl shadow p-6 flex flex-col items-center">
-            <div class="text-4xl font-bold text-green-600 mb-2">8</div>
-            <div class="text-slate-500 font-semibold">Usuarios</div>
+        <div class="summary-card">
+            <div class="summary-value text-orange-500">{{ ticketsPendientes }}</div>
+            <div class="summary-label">Tickets Pendientes</div>
         </div>
-        <div class="bg-white rounded-xl shadow p-6 flex flex-col items-center">
-            <div class="text-4xl font-bold text-orange-500 mb-2">3</div>
-            <div class="text-slate-500 font-semibold">Grupos</div>
+        <div class="summary-card">
+            <div class="summary-value text-indigo-600">{{ totalGrupos }}</div>
+            <div class="summary-label">Grupos del Usuario</div>
         </div>
-        <div class="bg-white rounded-xl shadow p-6 flex flex-col items-center">
-            <div class="text-4xl font-bold text-purple-600 mb-2">5</div>
-            <div class="text-slate-500 font-semibold">Tickets Pendientes</div>
+        <div class="summary-card">
+            <div class="summary-value text-emerald-600">{{ permissions.length }}</div>
+            <div class="summary-label">Permisos Activos</div>
         </div>
     </div>
 
-</div>
+    <div class="chart-grid">
+        <p-card header="Tickets por Estado">
+            <div class="chart-box">
+                <p-chart type="doughnut" [data]="estadoChartData" [options]="chartOptions"></p-chart>
+            </div>
+        </p-card>
 
-<style>
-    .erp-container {
-        width: 90dvw;
-    }
-</style>
+        <p-card header="Tickets por Prioridad">
+            <div class="chart-box">
+                <p-chart type="bar" [data]="prioridadChartData" [options]="chartOptions"></p-chart>
+            </div>
+        </p-card>
+
+        <p-card header="Tickets por Grupo">
+            <div class="chart-box">
+                <p-chart type="bar" [data]="grupoChartData" [options]="chartOptions"></p-chart>
+            </div>
+        </p-card>
+    </div>
+
+    <p-card header="Mis permisos" styleClass="permissions-card mt-8">
+        @if (permissions.length > 0) {
+        <div class="permissions-grid">
+            @for (permission of permissions; track permission) {
+            <p-tag [value]="permission" severity="info"></p-tag>
+            }
+        </div>
+        } @else {
+        <p class="text-slate-500 m-0">
+            Todavía no hay permisos cargados para esta sesión.
+        </p>
+        }
+    </p-card>
+</div>

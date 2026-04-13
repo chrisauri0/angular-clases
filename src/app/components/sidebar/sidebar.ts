@@ -16,6 +16,8 @@ items = [
   { label: 'Usuarios', icon: 'pi pi-user', routerLink: '/usuarios' },
   { label: 'Grupos', icon: 'pi pi-users', routerLink: '/grupos' },
   { label: 'Cerrar Sesión', icon: 'pi pi-sign-out', routerLink: '/login' },
-  { label: 'Version : Practica 3' }
+  
+  { label: 'Version : Practica 3' },
+  {label: 'Metricas Backend', icon: 'pi pi-chart-bar', routerLink: '/metricas'},
 ];
 }

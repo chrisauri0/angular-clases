@@ -7,6 +7,8 @@ import { MessageModule } from 'primeng/message';
 import { CardModule } from 'primeng/card';
 import { CheckboxModule } from 'primeng/checkbox';
 import { FormBuilder, FormGroup, Validators, AbstractControl } from '@angular/forms';
+import { Router } from '@angular/router';
+import { API_BASE_URL_users } from '../../../services/api.config';
 
 @Component({
   selector: 'app-register',
@@ -21,7 +23,7 @@ export class Register {
   registerForm: FormGroup;
   loading = false;
 
-  constructor(private fb: FormBuilder) {
+  constructor(private fb: FormBuilder, private router: Router) {
     this.registerForm = this.fb.group(
       {
         name: ['', Validators.required],
@@ -76,15 +78,35 @@ export class Register {
     }
 
     this.loading = true;
-    // Guardar usuario en localStorage
-    const userData = { ...this.registerForm.value };
-    delete userData.confirmPassword;
-    localStorage.setItem('user', JSON.stringify(userData));
-    setTimeout(() => {
-      this.loading = false;
+    const payload = {
+      name: this.registerForm.value.name,
+      email: this.registerForm.value.email,
+      password: this.registerForm.value.password,
+    };
+
+    try {
+      const response = await fetch(`${API_BASE_URL_users}/auth/register`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(payload),
+      });
+
+      if (!response.ok) {
+        alert('No se pudo registrar el usuario');
+        return;
+      }
+
       alert('Registro exitoso');
       this.registerForm.reset();
-    }, 1200);
+      await this.router.navigate(['/login']);
+      
+    } catch (error) {
+      alert('Error de conexion con el servidor');
+    } finally {
+      this.loading = false;
+    }
   }
 
 }

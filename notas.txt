@@ -1,0 +1,117 @@
+Requerimientos de Proyecto ERPJir de
+Seguridad de Desarrollo de Aplicaciones
+Introduccion
+Este documento describe los requerimientos funcionales y técnicos de un sistema ERP de
+tickets, basado en Angular 21 + PrimeNG, con autenticación por usuario, permisos por
+acción (sin roles) y arquitectura de microservicios con un API Gateway.
+El objetivo es permitir a los usuarios gestionar tickets en modo Kanban o lista dentro de
+grupos / workspaces, con controles de seguridad finos a nivel de interfaz y de API.
+Stack Tecnologico
+Frontend
+• Framework: Angular 21 con enrutamiento estándar (@angular/router).
+• Librería de UI: PrimeNG
+• Estructura de componentes:
+• Cada componente vive en una carpeta separada con:
+• component.ts (lógica).
+• component.html (vista).
+• component.css (estilos locales).
+
+Backend
+• Arquitectura de microservicios:
+• user (gestión de usuarios, login y register), tecnologia: UP2U.
+• tickets (gestión de tickets), tecnologia: fastify.
+• groups (gestión de grupos / workspaces y permisos por grupo), tecnologia:
+UP2U.
+• apigateway (punto único de entrada para todas las llamadas, validación de
+token y permisos), tecnologia: fastify.
+
+• Todos los requests pasan obligatoriamente por el API Gateway.
+• Comunicación entre servicios mediante HTTP/REST.
+Modelo de seguridad y permisos
+Permisos por acción 
+• El sistema se basa en permisos expresados como strings (por
+ejemplo: "tickets:add", "tickets:move", "groups:manage", "users:manage").
+• los permisos se asignan directamente por usuario y grupo.
+• Cada usuario puede tener permisos diferentes por grupo / workspace.
+Frontend: directiva de permisos
+• Crear una directiva Angular reutilizable llamada appHasPermission, esta se utilisa
+en el renderizado en interfaz y/o rutas.
+• Funcionamiento:
+
+• Si el usuario tiene el permiso especificado, el elemento se renderiza.
+• Si no lo tiene, el elemento se elimina del DOM (no solo ocultado con CSS).
+• La directiva debe consultar un servicio central (PermissionService) que exponga:
+• hasPermission(permission: string): boolean.
+• refreshPermissionsForGroup(groupId: string): void.
+
+Backend: permisos en el API Gateway
+• El API Gateway debe:
+• Validar el token de autenticación (JWT o equivalente).
+• Verificar que el usuario tenga el permiso necesario para el endpoint
+solicitado.
+• Ejemplo:
+• Endpoint POST /tickets requiere permiso "tickets:add".
+• Endpoint PATCH /tickets/:id/status requiere
+permiso "tickets:move" y que el ticket esté asignado al usuario.
+
+• Si el usuario no tiene el permiso:
+• Devolver código HTTP 403 y el mismo esquema JSON global.
+
+Endpoints de login y register
+• Los endpoints /auth/login y /auth/register del microservicio user:
+• No requieren permisos previos.
+• El API Gateway solo valida que el request sea válido y enrutará
+directamente al microservicio.
+
+Esquema de respuesta JSON universal
+Todos los microservicios y el API Gateway deben devolver respuestas con el mismo
+esquema JSON:
+json
+{
+"statusCode": 200,
+"intOpCode": "SxUS200",
+"data": [ /* lista de objetos o objeto */ ]
+}
+• statusCode: código HTTP semántico (200, 400, 403, 404, 500, etc.).
+• intOpCode: código de operación interno del sistema (ej. "SxUS200" para operaciones
+de usuario).
+• data: payload de la respuesta (array de objetos, objeto único o null).
+
+
+
+
+Seguridad y performance (backend)
+Autenticación y autorización
+• Uso de JWT (o token similar) para autenticación.
+• El token debe incluir:
+• userId e información base del usuario.
+• Lista de permisos por grupo (o un identificador que permita recuperarlos
+rápidamente).
+Rate limiting
+• Implementar rate limiting en el API Gateway:
+
+• Limitar número de requests por IP / usuario en un intervalo de tiempo (por
+ejemplo: 100 requests por minuto).
+• Si se excede el límite:
+• Devolver código HTTP 429.
+• Incluir mensaje “Too many requests” en el esquema JSON global.
+
+Validación de entradas
+• Cada microservicio debe validar las entradas usando JSON Schema o librería
+equivalente.
+• Ejemplo de validación:
+• Campos obligatorios.
+• Formatos de email, tamaño de campos, tipos de datos.
+
+
+
+Puntos Adicionales (extra)
+El porcentaje se basa dependiendo a la cantidad de puntos extra asignada en
+total.
+• (20%)Logs centralizados en el API Gateway y microservicios(almacenarlas en B.D):
+• Registro de requests (endpoint, método, usuario, IP, status HTTP).
+• Errores con stack traces básicos.
+• (20%)Métricas simples (almacenarlas en B.D.):
+• Número de requests por endpoint.
+• Tiempo de respuesta promedio.
+• (60%)Realizar Deploy de toda el sistema.

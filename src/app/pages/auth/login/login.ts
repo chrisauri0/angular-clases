@@ -20,11 +20,6 @@ export class Login {
 loginForm: FormGroup;
   loading = false;
 
-  userFake = {
-    email: 'admin@uteq.edu.mx',
-    password: 'admin123'
-  };
-
   constructor(private fb: FormBuilder, private routerService: Router, private authService: AuthService) {
     this.loginForm = this.fb.group({
       email: ['', [Validators.required, Validators.email]],
@@ -32,7 +27,7 @@ loginForm: FormGroup;
     });
   }
 
- onSubmit() {
+ async onSubmit() {
   if (this.loginForm.invalid) {
     this.loginForm.markAllAsTouched();
     return;
@@ -40,22 +35,17 @@ loginForm: FormGroup;
 
   this.loading = true;
 
-  setTimeout(() => {
-    const emailInput = this.loginForm.value.email;
-    const passwordInput = this.loginForm.value.password;
+  const emailInput = this.loginForm.value.email;
+  const passwordInput = this.loginForm.value.password;
 
-    const role = this.authService.login(emailInput, passwordInput);
+  const success = await this.authService.login(emailInput, passwordInput);
 
-    if (role === 'admin') {
-      this.routerService.navigate(['/home']);
-    } else if (role === 'user') {
-      this.routerService.navigate(['/home']);
-    } else {
-      // Usuario o contraseña incorrectos
+  if (success) {
+    this.routerService.navigate(['/home']);
+  } else {
       alert('Correo o contraseña incorrectos');
-    }
+  }
 
-    this.loading = false;
-  }, 1000);
+  this.loading = false;
 }
 }

@@ -1,0 +1,212 @@
+<div class="metrics-page">
+	<div class="metrics-header">
+		<div>
+			<h1 class="title">Metricas del Sistema</h1>
+			<p class="subtitle">Vista operativa de trafico, latencia y errores por endpoint.</p>
+		</div>
+
+		<p-button label="Recargar" icon="pi pi-refresh" severity="contrast" [outlined]="true" [disabled]="loading"
+			(click)="reloadAll()"></p-button>
+	</div>
+
+	@if (loading) {
+		<div class="loading-wrap">
+			<p-progressSpinner strokeWidth="4" ariaLabel="cargando"></p-progressSpinner>
+			<p>Cargando metricas...</p>
+		</div>
+	}
+
+	@if (!loading && errorMessage) {
+		<p-card styleClass="error-card">
+			<p class="m-0">{{ errorMessage }}</p>
+		</p-card>
+	}
+
+	@if (!loading && !errorMessage) {
+		<div class="summary-grid">
+			<p-card>
+				<div class="metric-label">Total Requests</div>
+				<div class="metric-value">{{ summary.total_requests }}</div>
+			</p-card>
+
+			<p-card>
+				<div class="metric-label">Errores</div>
+				<div class="metric-value danger">{{ summary.total_error_status }}</div>
+			</p-card>
+
+			<p-card>
+				<div class="metric-label">Promedio Global</div>
+				<div class="metric-value">{{ summary.global_avg_response_ms }} ms</div>
+			</p-card>
+
+			<p-card>
+				<div class="metric-label">Error Rate</div>
+				<div class="metric-value">{{ errorRate }}%</div>
+			</p-card>
+		</div>
+
+		<p-card header="Metricas por Endpoint" styleClass="table-card">
+			<p-table #dt [value]="byEndpoint" [paginator]="true" [rows]="8" responsiveLayout="scroll"
+				[globalFilterFields]="['endpoint', 'service_name', 'method']">
+				<ng-template pTemplate="caption">
+					<div class="table-toolbar">
+						<span class="p-input-icon-left toolbar-search">
+							<i class="pi pi-search"></i>
+							<input pInputText type="text" [(ngModel)]="searchValue" placeholder="Buscar endpoint o servicio"
+								(input)="dt.filterGlobal(searchValue, 'contains')" />
+						</span>
+
+						<p-select [options]="serviceOptions" [(ngModel)]="selectedService" placeholder="Servicio"
+							[showClear]="true" optionLabel="label" optionValue="value"
+							(onChange)="dt.filter(selectedService, 'service_name', 'equals')"></p-select>
+
+						<p-select [options]="methodOptions" [(ngModel)]="selectedMethod" placeholder="Metodo"
+							[showClear]="true" optionLabel="label" optionValue="value"
+							(onChange)="dt.filter(selectedMethod, 'method', 'equals')"></p-select>
+
+						<p-button label="Limpiar" icon="pi pi-filter-slash" severity="secondary" [outlined]="true"
+							(click)="clearFilters(dt)"></p-button>
+					</div>
+				</ng-template>
+
+				<ng-template pTemplate="header">
+					<tr>
+						<th>Servicio</th>
+						<th>Metodo</th>
+						<th>Endpoint</th>
+						<th>Requests</th>
+						<th>Promedio (ms)</th>
+					</tr>
+				</ng-template>
+
+				<ng-template pTemplate="body" let-row>
+					<tr>
+						<td>{{ row.service_name }}</td>
+						<td>
+							<p-tag [value]="row.method" [severity]="methodSeverity(row.method)"></p-tag>
+						</td>
+						<td class="endpoint-cell">{{ row.endpoint }}</td>
+						<td>{{ row.request_count }}</td>
+						<td>{{ row.avg_response_ms }}</td>
+					</tr>
+				</ng-template>
+
+				<ng-template pTemplate="emptymessage">
+					<tr>
+						<td colspan="5">No hay datos de endpoints por ahora.</td>
+					</tr>
+				</ng-template>
+			</p-table>
+		</p-card>
+
+		<p-card header="Logs de Requests" styleClass="table-card">
+			@if (loadingLogs) {
+				<div class="section-loading">Cargando logs de requests...</div>
+			} @else if (logsErrorMessage) {
+				<p class="section-error m-0">{{ logsErrorMessage }}</p>
+			} @else {
+				<p-table [value]="requestLogs" [paginator]="true" [rows]="8" responsiveLayout="scroll">
+					<ng-template pTemplate="header">
+						<tr>
+							<th>Servicio</th>
+							<th>Metodo</th>
+							<th>Endpoint</th>
+							<th>Status</th>
+							<th>Respuesta (ms)</th>
+							<th>Fecha</th>
+						</tr>
+					</ng-template>
+
+					<ng-template pTemplate="body" let-row>
+						<tr>
+							<td>{{ row.service_name }}</td>
+							<td><p-tag [value]="row.method" [severity]="methodSeverity(row.method)"></p-tag></td>
+							<td class="endpoint-cell">{{ row.endpoint }}</td>
+							<td>{{ row.status_code }}</td>
+							<td>{{ row.response_ms }}</td>
+							<td>{{ row.created_at | date: 'short' }}</td>
+						</tr>
+					</ng-template>
+
+					<ng-template pTemplate="emptymessage">
+						<tr>
+							<td colspan="6">No hay logs de requests por ahora.</td>
+						</tr>
+					</ng-template>
+				</p-table>
+			}
+		</p-card>
+
+		<p-card header="Logs de Errores" styleClass="table-card">
+			@if (loadingErrors) {
+				<div class="section-loading">Cargando logs de errores...</div>
+			} @else if (errorsErrorMessage) {
+				<p class="section-error m-0">{{ errorsErrorMessage }}</p>
+			} @else {
+				<p-table [value]="errorLogs" [paginator]="true" [rows]="8" responsiveLayout="scroll">
+					<ng-template pTemplate="header">
+						<tr>
+							<th>Servicio</th>
+							<th>Metodo</th>
+							<th>Endpoint</th>
+							<th>Status</th>
+							<th>Error</th>
+							<th>Fecha</th>
+						</tr>
+					</ng-template>
+
+					<ng-template pTemplate="body" let-row>
+						<tr>
+							<td>{{ row.service_name }}</td>
+							<td><p-tag [value]="row.method" [severity]="methodSeverity(row.method)"></p-tag></td>
+							<td class="endpoint-cell">{{ row.endpoint }}</td>
+							<td>{{ row.status_code }}</td>
+							<td>{{ row.error_message }}</td>
+							<td>{{ row.created_at | date: 'short' }}</td>
+						</tr>
+					</ng-template>
+
+					<ng-template pTemplate="emptymessage">
+						<tr>
+							<td colspan="6">No hay logs de errores por ahora.</td>
+						</tr>
+					</ng-template>
+				</p-table>
+			}
+		</p-card>
+
+		<p-card header="App Logs (Gateway)" styleClass="table-card">
+			@if (loadingAppLogs) {
+				<div class="section-loading">Cargando app logs...</div>
+			} @else if (appLogsErrorMessage) {
+				<p class="section-error m-0">{{ appLogsErrorMessage }}</p>
+			} @else {
+				<p-table [value]="appLogs" [paginator]="true" [rows]="8" responsiveLayout="scroll">
+					<ng-template pTemplate="header">
+						<tr>
+							<th>Servicio</th>
+							<th>Evento</th>
+							<th>Mensaje</th>
+							<th>Fecha</th>
+						</tr>
+					</ng-template>
+
+					<ng-template pTemplate="body" let-row>
+						<tr>
+							<td>{{ row.service_name }}</td>
+							<td><p-tag [value]="row.event_type" severity="secondary"></p-tag></td>
+							<td>{{ row.message }}</td>
+							<td>{{ row.created_at | date: 'short' }}</td>
+						</tr>
+					</ng-template>
+
+					<ng-template pTemplate="emptymessage">
+						<tr>
+							<td colspan="4">No hay app logs por ahora.</td>
+						</tr>
+					</ng-template>
+				</p-table>
+			}
+		</p-card>
+	}
+</div>

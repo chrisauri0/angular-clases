@@ -30,6 +30,25 @@
   }
 }
 
+.deploy-config {
+  display: flex;
+  justify-content: center;
+}
+
+.deploy-card {
+  width: min(1100px, 100%);
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(148, 163, 184, 0.3);
+  border-radius: 1rem;
+  padding: 1rem;
+}
+
+.deploy-row {
+  display: grid;
+  grid-template-columns: 1fr auto auto;
+  gap: 0.75rem;
+}
+
 /* FEATURES */
 .features {
   background-color: #f8fafc;
@@ -135,5 +154,9 @@
 
   .feature-card {
     margin-bottom: 1.5rem;
+  }
+
+  .deploy-row {
+    grid-template-columns: 1fr;
   }
 }

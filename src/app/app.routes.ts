@@ -8,7 +8,7 @@ import { Sidebar } from './components/sidebar/sidebar';
 import { Usuarios } from './pages/usuarios/usuarios';
 import { Grupos } from './pages/grupos/grupos';
 import { GestionUsuarios } from './pages/gestion-usuarios/gestion-usuarios';
-
+import { Metricas } from './pages/metricas/metricas';
 export const routes: Routes = [
     {
     path: '',
@@ -30,6 +30,7 @@ export const routes: Routes = [
       {path: 'gestion-usuarios', component: GestionUsuarios},
       {path: 'grupos', component: Grupos},
       {path: 'grupos/:grupo', component: Grupos},
+      {path: 'metricas', component: Metricas}
 
     ]
     

@@ -1,0 +1,72 @@
+.erp-container {
+	width: 90dvw;
+}
+
+.hero-row {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	gap: 1rem;
+}
+
+.summary-card {
+	background: #ffffff;
+	border-radius: 0.9rem;
+	box-shadow: 0 10px 24px rgba(15, 23, 42, 0.09);
+	padding: 1.25rem;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+}
+
+.summary-value {
+	font-size: 2rem;
+	font-weight: 800;
+	line-height: 1;
+}
+
+.summary-label {
+	margin-top: 0.4rem;
+	font-weight: 600;
+	color: #64748b;
+}
+
+.chart-grid {
+	display: grid;
+	grid-template-columns: repeat(1, minmax(0, 1fr));
+	gap: 1rem;
+}
+
+.chart-box {
+	height: 320px;
+}
+
+.error-box {
+	border-left: 6px solid #ef4444;
+}
+
+.hero-card {
+	background: rgba(255, 255, 255, 0.72);
+	backdrop-filter: blur(10px);
+	border: 1px solid rgba(148, 163, 184, 0.22);
+	border-radius: 1.25rem;
+	padding: 1.5rem;
+	box-shadow: 0 18px 40px rgba(15, 23, 42, 0.08);
+}
+
+.permissions-card {
+	border-radius: 1.25rem;
+	box-shadow: 0 18px 40px rgba(15, 23, 42, 0.08);
+}
+
+.permissions-grid {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 0.75rem;
+}
+
+@media (min-width: 1024px) {
+	.chart-grid {
+		grid-template-columns: repeat(3, minmax(0, 1fr));
+	}
+}

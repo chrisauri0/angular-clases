@@ -5,14 +5,15 @@ import { Injectable, signal } from "@angular/core";
   providedIn: 'root'
 })
 export class PermissionsService {
-  private  userPermissions = signal<string[]>([]);
+  private readonly _userPermissions = signal<string[]>([]);
+  readonly userPermissions = this._userPermissions.asReadonly();
 
   setPermissions(perms: string[]) {
-    this.userPermissions.set(perms);
+    this._userPermissions.set(perms);
   }
 
   hasPermission(permission: string): boolean {
-    return this.userPermissions().includes(permission);
+    return this._userPermissions().includes(permission);
   }
   hasAnyPermission(permissions: string[]): boolean {
     return permissions.some(perm => this.hasPermission(perm));
