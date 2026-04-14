@@ -7,7 +7,7 @@ function getProductionUrl(): string {
 	}
 }
 
-export const URL_PRODUCCION = getProductionUrl();
+export const URL_PRODUCCION = 'http://3.22.185.75';
 
 export const API_BASE_URL_users = URL_PRODUCCION || 'http://localhost:3001';
 export const API_BASE_URL_tickets = URL_PRODUCCION || 'http://localhost:3002';
