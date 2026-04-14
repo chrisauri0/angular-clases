@@ -9,6 +9,6 @@ function getProductionUrl(): string {
 
 export const URL_PRODUCCION = 'http://3.22.185.75';
 
-export const API_BASE_URL_users = URL_PRODUCCION || 'http://localhost:3001';
-export const API_BASE_URL_tickets = URL_PRODUCCION || 'http://localhost:3002';
-export const API_BASE_URL_groups = URL_PRODUCCION || 'http://localhost:3003';
+export const API_BASE_URL_users = '/api';
+export const API_BASE_URL_tickets = '/api';
+export const API_BASE_URL_groups = '/api';
